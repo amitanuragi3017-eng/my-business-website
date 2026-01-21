@@ -84,51 +84,146 @@
             color: #94a3b8;
         }
         
-        .filters {
+        .filter-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .filter-section h3 {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .filter-group label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #475569;
+        }
+        
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+            color: #334155;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .date-filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .date-input {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .action-buttons {
             display: flex;
             gap: 12px;
             flex-wrap: wrap;
+            margin-top: 16px;
         }
         
-        .filter-btn {
+        .btn {
             padding: 8px 16px;
-            background: white;
-            border: 1px solid #e2e8f0;
             border-radius: 6px;
-            color: #475569;
             font-size: 14px;
             cursor: pointer;
             transition: all 0.2s;
+            border: 1px solid transparent;
         }
         
-        .filter-btn:hover {
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        
+        .btn-secondary {
             background: #f1f5f9;
-            border-color: #cbd5e1;
+            color: #475569;
+            border-color: #e2e8f0;
         }
         
-        .clear-btn {
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+        
+        .btn-success {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+            border-color: #f59e0b;
+        }
+        
+        .btn-warning:hover {
+            background: #d97706;
+        }
+        
+        .btn-danger {
             background: #ef4444;
             color: white;
-            border: none;
+            border-color: #ef4444;
         }
         
-        .clear-btn:hover {
+        .btn-danger:hover {
             background: #dc2626;
         }
         
-        .add-btn {
-            background: #3b82f6;
+        .btn-clear {
+            background: #94a3b8;
             color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.2s;
+            border-color: #94a3b8;
         }
         
-        .add-btn:hover {
-            background: #2563eb;
+        .btn-clear:hover {
+            background: #64748b;
         }
         
         table {
@@ -274,36 +369,6 @@
             margin-top: 32px;
         }
         
-        .btn-primary {
-            background: #3b82f6;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        
-        .btn-primary:hover {
-            background: #2563eb;
-        }
-        
-        .btn-secondary {
-            background: #f1f5f9;
-            color: #475569;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        
-        .btn-secondary:hover {
-            background: #e2e8f0;
-        }
-        
         .notification {
             position: fixed;
             top: 20px;
@@ -315,6 +380,13 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             display: none;
             z-index: 1001;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+            font-style: italic;
         }
     </style>
 </head>
@@ -348,16 +420,106 @@
         </div>
     </div>
     
-    <!-- Controls -->
+    <!-- Search -->
     <div class="controls">
         <input type="text" class="search-box" placeholder="Search vendors or networks..." id="search-input" onkeyup="filterPayments()">
+        <button class="btn btn-primary" onclick="openAddModal()">+ Add Payment</button>
+    </div>
+    
+    <!-- Advanced Filters -->
+    <div class="filter-section">
+        <h3>Filter Payments</h3>
         
-        <div class="filters">
-            <button class="filter-btn">All Networks</button>
-            <button class="filter-btn">All Status</button>
-            <button class="filter-btn">All Vendors</button>
-            <button class="filter-btn clear-btn" onclick="clearFilters()">Clear Filters</button>
-            <button class="add-btn" onclick="openAddModal()">+ Add Payment</button>
+        <div class="filters-grid">
+            <!-- Network Filter -->
+            <div class="filter-group">
+                <label for="network-filter">Network</label>
+                <select class="filter-select" id="network-filter" onchange="filterPayments()">
+                    <option value="all">All Networks</option>
+                </select>
+            </div>
+            
+            <!-- Status Filter -->
+            <div class="filter-group">
+                <label for="status-filter">Status</label>
+                <select class="filter-select" id="status-filter" onchange="filterPayments()">
+                    <option value="all">All Status</option>
+                </select>
+            </div>
+            
+            <!-- Vendor Filter -->
+            <div class="filter-group">
+                <label for="vendor-filter">Vendor</label>
+                <select class="filter-select" id="vendor-filter" onchange="filterPayments()">
+                    <option value="all">All Vendors</option>
+                </select>
+            </div>
+            
+            <!-- Payment Method Filter -->
+            <div class="filter-group">
+                <label for="method-filter">Payment Method</label>
+                <select class="filter-select" id="method-filter" onchange="filterPayments()">
+                    <option value="all">All Methods</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Date Filters -->
+        <div class="date-filters">
+            <div class="filter-group">
+                <label for="date-from">From Date</label>
+                <input type="date" class="date-input" id="date-from" onchange="filterPayments()">
+            </div>
+            
+            <div class="filter-group">
+                <label for="date-to">To Date</label>
+                <input type="date" class="date-input" id="date-to" onchange="filterPayments()">
+            </div>
+            
+            <div class="filter-group">
+                <label for="month-filter">Month</label>
+                <select class="filter-select" id="month-filter" onchange="filterByMonth()">
+                    <option value="all">All Months</option>
+                    <option value="01">January</option>
+                    <option value="02">February</option>
+                    <option value="03">March</option>
+                    <option value="04">April</option>
+                    <option value="05">May</option>
+                    <option value="06">June</option>
+                    <option value="07">July</option>
+                    <option value="08">August</option>
+                    <option value="09">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="year-filter">Year</label>
+                <select class="filter-select" id="year-filter" onchange="filterPayments()">
+                    <option value="all">All Years</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-clear" onclick="clearAllFilters()">
+                Clear All Filters
+            </button>
+            <button class="btn btn-success" onclick="exportToCSV()">
+                Export to CSV
+            </button>
+            <button class="btn btn-warning" onclick="importData()">
+                Import Data
+            </button>
+            <button class="btn btn-danger" onclick="backupData()">
+                Backup Data
+            </button>
         </div>
     </div>
     
@@ -377,7 +539,7 @@
             </tr>
         </thead>
         <tbody id="payments-body">
-            <!-- Payments will be loaded here from localStorage -->
+            <!-- Payments will be loaded here -->
         </tbody>
     </table>
     
@@ -441,21 +603,44 @@
                 </div>
                 
                 <div class="modal-buttons">
-                    <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
-                    <button type="submit" class="btn-primary" id="modal-submit-btn">Save Payment</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="modal-submit-btn">Save Payment</button>
                 </div>
             </form>
+        </div>
+    </div>
+    
+    <!-- Import Modal -->
+    <div class="modal" id="import-modal">
+        <div class="modal-content">
+            <h3>Import Data</h3>
+            <div class="form-group">
+                <label>Select JSON file to import</label>
+                <input type="file" class="form-input" id="import-file" accept=".json">
+                <p style="font-size: 12px; color: #64748b; margin-top: 8px;">
+                    Upload a JSON file previously exported from this dashboard
+                </p>
+            </div>
+            
+            <div class="modal-buttons">
+                <button type="button" class="btn btn-secondary" onclick="closeImportModal()">Cancel</button>
+                <button type="button" class="btn btn-warning" onclick="processImport()">Import Data</button>
+            </div>
         </div>
     </div>
     
     <!-- Notification -->
     <div class="notification" id="notification">Payment saved successfully!</div>
     
+    <!-- Hidden file input for restore -->
+    <input type="file" id="restore-file" accept=".json" style="display: none;">
+    
     <script>
         // DATA STORAGE - localStorage on your laptop
         const STORAGE_KEY = 'payment_dashboard_data';
         let payments = [];
         let editingId = null;
+        let currentFilters = {};
         
         // Initialize with sample data if empty
         function initializeData() {
@@ -525,14 +710,166 @@
                 saveToLocalStorage();
             }
             
-            renderPayments();
+            populateFilterOptions();
+            filterPayments();
             updateStats();
         }
         
-        // SAVE to localStorage (your laptop)
+        // Populate filter dropdowns
+        function populateFilterOptions() {
+            // Get unique values
+            const networks = ['undefined', ...new Set(payments.map(p => p.network).filter(n => n && n !== 'undefined'))];
+            const statuses = [...new Set(payments.map(p => p.status))];
+            const vendors = [...new Set(payments.map(p => p.vendor))];
+            const methods = [...new Set(payments.map(p => p.method))];
+            
+            // Network filter
+            const networkFilter = document.getElementById('network-filter');
+            networkFilter.innerHTML = '<option value="all">All Networks</option>';
+            networks.forEach(network => {
+                const option = document.createElement('option');
+                option.value = network;
+                option.textContent = network;
+                networkFilter.appendChild(option);
+            });
+            
+            // Status filter
+            const statusFilter = document.getElementById('status-filter');
+            statusFilter.innerHTML = '<option value="all">All Status</option>';
+            statuses.forEach(status => {
+                const option = document.createElement('option');
+                option.value = status;
+                option.textContent = status;
+                statusFilter.appendChild(option);
+            });
+            
+            // Vendor filter
+            const vendorFilter = document.getElementById('vendor-filter');
+            vendorFilter.innerHTML = '<option value="all">All Vendors</option>';
+            vendors.forEach(vendor => {
+                const option = document.createElement('option');
+                option.value = vendor;
+                option.textContent = vendor;
+                vendorFilter.appendChild(option);
+            });
+            
+            // Method filter
+            const methodFilter = document.getElementById('method-filter');
+            methodFilter.innerHTML = '<option value="all">All Methods</option>';
+            methods.forEach(method => {
+                const option = document.createElement('option');
+                option.value = method;
+                option.textContent = method;
+                methodFilter.appendChild(option);
+            });
+        }
+        
+        // SAVE to localStorage
         function saveToLocalStorage() {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(payments));
             console.log('Data saved to localStorage:', payments.length, 'payments');
+        }
+        
+        // FILTER payments based on all criteria
+        function filterPayments() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const networkFilter = document.getElementById('network-filter').value;
+            const statusFilter = document.getElementById('status-filter').value;
+            const vendorFilter = document.getElementById('vendor-filter').value;
+            const methodFilter = document.getElementById('method-filter').value;
+            const dateFrom = document.getElementById('date-from').value;
+            const dateTo = document.getElementById('date-to').value;
+            const yearFilter = document.getElementById('year-filter').value;
+            
+            let filtered = payments;
+            
+            // Search filter
+            if (searchTerm) {
+                filtered = filtered.filter(p => 
+                    p.vendor.toLowerCase().includes(searchTerm) ||
+                    p.invoice.toLowerCase().includes(searchTerm) ||
+                    (p.network && p.network.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            // Network filter
+            if (networkFilter !== 'all') {
+                filtered = filtered.filter(p => p.network === networkFilter);
+            }
+            
+            // Status filter
+            if (statusFilter !== 'all') {
+                filtered = filtered.filter(p => p.status === statusFilter);
+            }
+            
+            // Vendor filter
+            if (vendorFilter !== 'all') {
+                filtered = filtered.filter(p => p.vendor === vendorFilter);
+            }
+            
+            // Method filter
+            if (methodFilter !== 'all') {
+                filtered = filtered.filter(p => p.method === methodFilter);
+            }
+            
+            // Date range filter
+            if (dateFrom) {
+                filtered = filtered.filter(p => p.date >= dateFrom);
+            }
+            
+            if (dateTo) {
+                filtered = filtered.filter(p => p.date <= dateTo);
+            }
+            
+            // Year filter
+            if (yearFilter !== 'all') {
+                filtered = filtered.filter(p => p.date.startsWith(yearFilter));
+            }
+            
+            renderPayments(filtered);
+            updateStats(filtered);
+        }
+        
+        // Filter by month
+        function filterByMonth() {
+            const monthFilter = document.getElementById('month-filter').value;
+            const yearFilter = document.getElementById('year-filter').value;
+            
+            if (monthFilter === 'all') {
+                filterPayments();
+                return;
+            }
+            
+            let filtered = payments;
+            
+            if (yearFilter !== 'all') {
+                filtered = filtered.filter(p => p.date.startsWith(yearFilter));
+            }
+            
+            filtered = filtered.filter(p => {
+                const month = p.date.split('-')[1];
+                return month === monthFilter;
+            });
+            
+            renderPayments(filtered);
+            updateStats(filtered);
+        }
+        
+        // CLEAR all filters
+        function clearAllFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('network-filter').value = 'all';
+            document.getElementById('status-filter').value = 'all';
+            document.getElementById('vendor-filter').value = 'all';
+            document.getElementById('method-filter').value = 'all';
+            document.getElementById('date-from').value = '';
+            document.getElementById('date-to').value = '';
+            document.getElementById('month-filter').value = 'all';
+            document.getElementById('year-filter').value = 'all';
+            
+            renderPayments(payments);
+            updateStats(payments);
+            showNotification('All filters cleared');
         }
         
         // RENDER payments table
@@ -541,6 +878,17 @@
             const tbody = document.getElementById('payments-body');
             
             tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" class="no-data">
+                            No payments found. Try adjusting your filters or add a new payment.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
             
             data.forEach(payment => {
                 const formattedDate = formatDate(payment.date);
@@ -566,11 +914,12 @@
         }
         
         // UPDATE dashboard statistics
-        function updateStats() {
-            const totalPayments = payments.length;
-            const pendingCount = payments.filter(p => p.status === 'Pending').length;
-            const receivedCount = payments.filter(p => p.status === 'Completed').length;
-            const totalAmount = payments.reduce((sum, p) => sum + p.amount, 0);
+        function updateStats(filteredPayments = null) {
+            const data = filteredPayments || payments;
+            const totalPayments = data.length;
+            const pendingCount = data.filter(p => p.status === 'Pending').length;
+            const receivedCount = data.filter(p => p.status === 'Completed').length;
+            const totalAmount = data.reduce((sum, p) => sum + p.amount, 0);
             
             document.getElementById('total-payments').textContent = totalPayments;
             document.getElementById('pending-count').textContent = pendingCount;
@@ -581,14 +930,14 @@
         // ADD new payment
         function addPayment(paymentData) {
             const newPayment = {
-                id: Date.now(), // Unique ID
+                id: Date.now(),
                 ...paymentData
             };
             
             payments.push(newPayment);
             saveToLocalStorage();
-            renderPayments();
-            updateStats();
+            populateFilterOptions();
+            filterPayments();
             showNotification('Payment added successfully!');
         }
         
@@ -599,7 +948,6 @@
             
             editingId = id;
             
-            // Fill form with payment data
             document.getElementById('network-input').value = payment.network;
             document.getElementById('vendor-input').value = payment.vendor;
             document.getElementById('amount-input').value = payment.amount;
@@ -621,8 +969,8 @@
             
             payments[index] = { id, ...paymentData };
             saveToLocalStorage();
-            renderPayments();
-            updateStats();
+            populateFilterOptions();
+            filterPayments();
             showNotification('Payment updated successfully!');
         }
         
@@ -631,34 +979,94 @@
             if (confirm('Are you sure you want to delete this payment?')) {
                 payments = payments.filter(p => p.id !== id);
                 saveToLocalStorage();
-                renderPayments();
-                updateStats();
+                populateFilterOptions();
+                filterPayments();
                 showNotification('Payment deleted successfully!');
             }
         }
         
-        // FILTER payments
-        function filterPayments() {
-            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+        // EXPORT to CSV
+        function exportToCSV() {
+            const headers = ['Network', 'Vendor', 'Amount', 'Date', 'Due Date', 'Status', 'Method', 'Invoice'];
+            const rows = payments.map(p => [
+                p.network || 'undefined',
+                p.vendor,
+                `$${p.amount.toFixed(2)}`,
+                formatDate(p.date),
+                formatDate(p.dueDate),
+                p.status,
+                p.method,
+                p.invoice
+            ]);
             
-            if (!searchTerm) {
-                renderPayments();
+            const csvContent = [
+                headers.join(','),
+                ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+            ].join('\n');
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `payments-export-${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+            
+            showNotification('Data exported to CSV successfully!');
+        }
+        
+        // IMPORT data
+        function importData() {
+            document.getElementById('import-modal').style.display = 'flex';
+        }
+        
+        function closeImportModal() {
+            document.getElementById('import-modal').style.display = 'none';
+            document.getElementById('import-file').value = '';
+        }
+        
+        function processImport() {
+            const fileInput = document.getElementById('import-file');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select a file to import');
                 return;
             }
             
-            const filtered = payments.filter(payment => 
-                payment.vendor.toLowerCase().includes(searchTerm) ||
-                payment.invoice.toLowerCase().includes(searchTerm) ||
-                payment.network.toLowerCase().includes(searchTerm)
-            );
-            
-            renderPayments(filtered);
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    if (!Array.isArray(importedData)) {
+                        throw new Error('Invalid file format');
+                    }
+                    
+                    if (confirm(`This will replace all current data with ${importedData.length} imported payments. Continue?`)) {
+                        payments = importedData;
+                        saveToLocalStorage();
+                        populateFilterOptions();
+                        filterPayments();
+                        closeImportModal();
+                        showNotification(`Successfully imported ${importedData.length} payments`);
+                    }
+                } catch (error) {
+                    alert('Error importing data: Invalid JSON format');
+                }
+            };
+            reader.readAsText(file);
         }
         
-        // CLEAR filters
-        function clearFilters() {
-            document.getElementById('search-input').value = '';
-            renderPayments();
+        // BACKUP data
+        function backupData() {
+            const dataStr = JSON.stringify(payments, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `payment-dashboard-backup-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            showNotification('Backup downloaded successfully!');
         }
         
         // MODAL functions
@@ -678,7 +1086,6 @@
             editingId = null;
             document.getElementById('payment-form').reset();
             
-            // Set default dates
             const today = new Date().toISOString().split('T')[0];
             const nextWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
             
@@ -732,120 +1139,32 @@
             }, 3000);
         }
         
-        // BACKUP data (download JSON file)
-        function backupData() {
-            const dataStr = JSON.stringify(payments, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(dataBlob);
-            link.download = 'payment-dashboard-backup.json';
-            link.click();
-            
-            showNotification('Backup downloaded successfully!');
-        }
-        
-        // RESTORE data from file
-        function restoreData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const restoredData = JSON.parse(e.target.result);
-                    payments = restoredData;
-                    saveToLocalStorage();
-                    renderPayments();
-                    updateStats();
-                    showNotification('Data restored successfully!');
-                } catch (error) {
-                    alert('Error restoring data: Invalid file format');
-                }
-            };
-            reader.readAsText(file);
-        }
-        
-        // EXPORT to CSV
-        function exportToCSV() {
-            const headers = ['Network', 'Vendor', 'Amount', 'Date', 'Due Date', 'Status', 'Method', 'Invoice'];
-            const rows = payments.map(p => [
-                p.network,
-                p.vendor,
-                `$${p.amount.toFixed(2)}`,
-                formatDate(p.date),
-                formatDate(p.dueDate),
-                p.status,
-                p.method,
-                p.invoice
-            ]);
-            
-            const csvContent = [
-                headers.join(','),
-                ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
-            ].join('\n');
-            
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'payments-export.csv';
-            link.click();
-            
-            showNotification('Exported to CSV successfully!');
-        }
-        
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
             initializeData();
             
-            // Close modal on outside click
+            // Close modals on outside click
             document.getElementById('payment-modal').addEventListener('click', function(e) {
                 if (e.target === this) {
                     closeModal();
                 }
             });
             
-            // Add backup/restore buttons to page
-            const controls = document.querySelector('.controls');
-            const backupBtn = document.createElement('button');
-            backupBtn.className = 'filter-btn';
-            backupBtn.textContent = 'Backup Data';
-            backupBtn.onclick = backupData;
-            backupBtn.style.background = '#10b981';
-            backupBtn.style.color = 'white';
+            document.getElementById('import-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeImportModal();
+                }
+            });
             
-            const restoreBtn = document.createElement('button');
-            restoreBtn.className = 'filter-btn';
-            restoreBtn.textContent = 'Restore Data';
-            restoreBtn.onclick = () => document.getElementById('file-input').click();
-            restoreBtn.style.background = '#f59e0b';
-            restoreBtn.style.color = 'white';
+            // Set default dates for filters (current month)
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 2);
+            const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 1);
             
-            const exportBtn = document.createElement('button');
-            exportBtn.className = 'filter-btn';
-            exportBtn.textContent = 'Export CSV';
-            exportBtn.onclick = exportToCSV;
-            exportBtn.style.background = '#8b5cf6';
-            exportBtn.style.color = 'white';
+            document.getElementById('date-from').value = firstDay.toISOString().split('T')[0];
+            document.getElementById('date-to').value = lastDay.toISOString().split('T')[0];
             
-            controls.appendChild(backupBtn);
-            controls.appendChild(restoreBtn);
-            controls.appendChild(exportBtn);
-            
-            // Hidden file input for restore
-            const fileInput = document.createElement('input');
-            fileInput.type = 'file';
-            fileInput.id = 'file-input';
-            fileInput.accept = '.json';
-            fileInput.style.display = 'none';
-            fileInput.onchange = restoreData;
-            document.body.appendChild(fileInput);
-            
-            console.log('Payment Dashboard initialized. Data stored in localStorage.');
-            console.log('To view stored data in browser console:');
-            console.log('1. Press F12');
-            console.log('2. Go to Console tab');
-            console.log('3. Type: localStorage.getItem("payment_dashboard_data")');
+            console.log('Payment Dashboard initialized with advanced filters');
         });
     </script>
 </body>
