@@ -2,130 +2,103 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Advanced Payment Follow-up Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Follow-up Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 body{
   margin:0;
-  font-family:Arial, sans-serif;
+  font-family:Arial,sans-serif;
   background:#f4f6f9;
 }
 header{
-  background:linear-gradient(90deg,#0f172a,#020617);
+  background:#0f172a;
   color:#fff;
-  padding:18px;
+  padding:15px;
   text-align:center;
   font-size:22px;
 }
 .container{
-  max-width:1200px;
+  max-width:1100px;
   margin:30px auto;
-  padding:20px;
-}
-.cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:20px;
-  margin-bottom:30px;
+  padding:0 15px;
 }
 .card{
   background:#fff;
   padding:20px;
   border-radius:10px;
-  box-shadow:0 6px 15px rgba(0,0,0,.08);
-  text-align:center;
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+  margin-bottom:25px;
 }
-.card h3{margin:0;}
-.card p{font-size:22px;font-weight:bold;}
-
-.section{
-  background:#fff;
-  padding:20px;
-  border-radius:10px;
-  box-shadow:0 6px 15px rgba(0,0,0,.08);
-  margin-bottom:30px;
-}
-
 .form-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:15px;
+  grid-template-columns:2fr 1fr 1fr 1fr auto;
+  gap:12px;
 }
-
 input,select,button{
   padding:12px;
   font-size:15px;
 }
-
 button{
   background:#0ea5e9;
   color:#fff;
   border:none;
-  border-radius:5px;
+  border-radius:6px;
   cursor:pointer;
 }
-button:hover{background:#0284c7;}
+button:hover{background:#0284c7}
 
 table{
   width:100%;
   border-collapse:collapse;
-  margin-top:15px;
 }
-thead{
-  background:#020617;
+th{
+  background:#0f172a;
   color:#fff;
-}
-th,td{
   padding:12px;
-  text-align:center;
+}
+td{
+  padding:10px;
   border-bottom:1px solid #ddd;
+  text-align:center;
 }
-
 .delete{
-  background:red;
+  background:#ef4444;
+  color:white;
+  border:none;
   padding:6px 10px;
-  border-radius:4px;
+  cursor:pointer;
 }
-
-.status-Paid{color:green;font-weight:bold;}
-.status-Pending{color:orange;font-weight:bold;}
-.status-Overdue{color:red;font-weight:bold;}
 </style>
 </head>
 
 <body>
 
-<header>Advanced Payment Follow-up Dashboard</header>
+<header>Payment Follow-up Dashboard</header>
 
 <div class="container">
 
-  <!-- SUMMARY CARDS -->
-  <div class="cards">
-    <div class="card"><h3>Total</h3><p id="totalAmt">₹0</p></div>
-    <div class="card"><h3>Paid</h3><p id="paidAmt">₹0</p></div>
-    <div class="card"><h3>Pending</h3><p id="pendingAmt">₹0</p></div>
-    <div class="card"><h3>Overdue</h3><p id="overdueAmt">₹0</p></div>
-  </div>
-
   <!-- ADD PAYMENT -->
-  <div class="section">
-    <h2>Add Payment</h2>
-    <div class="form-grid">
-      <input id="customer" placeholder="Customer Name">
-      <input id="amount" type="number" placeholder="Amount">
-      <input id="dueDate" type="date">
-      <select id="status">
-        <option>Pending</option>
-        <option>Paid</option>
-        <option>Overdue</option>
-      </select>
-      <button id="addBtn">Add Record</button>
-    </div>
+  <div class="card">
+    <h2>Add Payment Record</h2>
+
+    <form id="paymentForm">
+      <div class="form-grid">
+        <input id="customer" placeholder="Customer Name" required>
+        <input id="amount" type="number" placeholder="Amount" required>
+        <input id="dueDate" type="date" required>
+        <select id="status">
+          <option>Pending</option>
+          <option>Paid</option>
+          <option>Overdue</option>
+        </select>
+        <button type="submit">Add</button>
+      </div>
+    </form>
   </div>
 
   <!-- TABLE -->
-  <div class="section">
+  <div class="card">
     <h2>Payment Records</h2>
     <table id="table">
       <thead>
@@ -144,81 +117,36 @@ th,td{
 </div>
 
 <script>
-const customer = document.getElementById("customer");
-const amount = document.getElementById("amount");
-const dueDate = document.getElementById("dueDate");
-const status = document.getElementById("status");
-const addBtn = document.getElementById("addBtn");
+const form = document.getElementById("paymentForm");
 const tbody = document.querySelector("#table tbody");
 
-const totalAmt = document.getElementById("totalAmt");
-const paidAmt = document.getElementById("paidAmt");
-const pendingAmt = document.getElementById("pendingAmt");
-const overdueAmt = document.getElementById("overdueAmt");
+form.addEventListener("submit", function(e){
+  e.preventDefault(); // 🔥 THIS WAS MISSING
 
-let payments = JSON.parse(localStorage.getItem("payments")) || [];
+  const customer = customerInput.value.trim();
+  const amount = amountInput.value;
+  const dueDate = dueDateInput.value;
+  const status = statusInput.value;
 
-function save(){
-  localStorage.setItem("payments",JSON.stringify(payments));
-}
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td>${customer}</td>
+    <td>₹${amount}</td>
+    <td>${dueDate}</td>
+    <td>${status}</td>
+    <td><button class="delete">Delete</button></td>
+  `;
 
-function updateTotals(){
-  let total=0,paid=0,pending=0,overdue=0;
-  payments.forEach(p=>{
-    const amt=Number(p.amount);
-    total+=amt;
-    if(p.status==="Paid") paid+=amt;
-    if(p.status==="Pending") pending+=amt;
-    if(p.status==="Overdue") overdue+=amt;
-  });
-  totalAmt.textContent=`₹${total}`;
-  paidAmt.textContent=`₹${paid}`;
-  pendingAmt.textContent=`₹${pending}`;
-  overdueAmt.textContent=`₹${overdue}`;
-}
+  row.querySelector(".delete").onclick = () => row.remove();
+  tbody.appendChild(row);
 
-function render(){
-  tbody.innerHTML="";
-  payments.forEach((p,i)=>{
-    const tr=document.createElement("tr");
-    tr.innerHTML=`
-      <td>${p.customer}</td>
-      <td>${p.amount}</td>
-      <td>${p.dueDate}</td>
-      <td class="status-${p.status}">${p.status}</td>
-      <td><button class="delete" onclick="removeRow(${i})">Delete</button></td>
-    `;
-    tbody.appendChild(tr);
-  });
-  updateTotals();
-}
+  form.reset();
+});
 
-function removeRow(i){
-  payments.splice(i,1);
-  save();
-  render();
-}
-
-addBtn.onclick=()=>{
-  if(!customer.value||!amount.value||!dueDate.value){
-    alert("Please fill all fields");
-    return;
-  }
-  payments.push({
-    customer:customer.value,
-    amount:amount.value,
-    dueDate:dueDate.value,
-    status:status.value
-  });
-  save();
-  render();
-  customer.value="";
-  amount.value="";
-  dueDate.value="";
-  status.value="Pending";
-};
-
-render();
+const customerInput = document.getElementById("customer");
+const amountInput = document.getElementById("amount");
+const dueDateInput = document.getElementById("dueDate");
+const statusInput = document.getElementById("status");
 </script>
 
 </body>
