@@ -2,135 +2,104 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Advanced Payment Follow-up Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Follow-up Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f4f6f9;
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f4f6f9;
 }
-
-header {
-  background: linear-gradient(90deg,#0f172a,#020617);
-  color: white;
-  padding: 18px;
-  text-align: center;
-  font-size: 22px;
+header{
+  background:#0f172a;
+  color:#fff;
+  padding:15px;
+  text-align:center;
+  font-size:22px;
 }
-
-.container {
-  max-width: 1100px;
-  margin: 30px auto;
-  padding: 20px;
+.container{
+  max-width:1100px;
+  margin:30px auto;
+  padding:0 15px;
 }
-
-.card {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-  margin-bottom: 30px;
+.card{
+  background:#fff;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+  margin-bottom:25px;
 }
-
-.card h2 {
-  margin-bottom: 15px;
+.form-grid{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr 1fr auto;
+  gap:12px;
 }
-
-form {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
-  gap: 15px;
+input,select,button{
+  padding:12px;
+  font-size:15px;
 }
-
-input, select, button {
-  padding: 12px;
-  font-size: 15px;
+button{
+  background:#0ea5e9;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
 }
+button:hover{background:#0284c7}
 
-button {
-  background: #0ea5e9;
-  border: none;
-  color: white;
-  cursor: pointer;
-  border-radius: 5px;
+table{
+  width:100%;
+  border-collapse:collapse;
 }
-
-button:hover {
-  background: #0284c7;
+th{
+  background:#0f172a;
+  color:#fff;
+  padding:12px;
 }
-
-.search {
-  margin-bottom: 15px;
+td{
+  padding:10px;
+  border-bottom:1px solid #ddd;
+  text-align:center;
 }
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-thead {
-  background: #020617;
-  color: white;
-}
-
-th, td {
-  padding: 12px;
-  text-align: center;
-  border-bottom: 1px solid #ddd;
-}
-
-.status-paid {
-  color: green;
-  font-weight: bold;
-}
-
-.status-pending {
-  color: orange;
-  font-weight: bold;
-}
-
-.status-overdue {
-  color: red;
-  font-weight: bold;
-}
-
-.delete-btn {
-  background: red;
-  padding: 6px 10px;
-  border-radius: 4px;
+.delete{
+  background:#ef4444;
+  color:white;
+  border:none;
+  padding:6px 10px;
+  cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  Payment Follow-up Dashboard
-</header>
+<header>Payment Follow-up Dashboard</header>
 
 <div class="container">
 
+  <!-- ADD PAYMENT -->
   <div class="card">
     <h2>Add Payment Record</h2>
+
     <form id="paymentForm">
-      <input type="text" id="customer" placeholder="Customer Name" required>
-      <input type="number" id="amount" placeholder="Amount" required>
-      <input type="date" id="dueDate" required>
-      <select id="status">
-        <option value="Pending">Pending</option>
-        <option value="Paid">Paid</option>
-        <option value="Overdue">Overdue</option>
-      </select>
-      <button type="submit">Add</button>
+      <div class="form-grid">
+        <input id="customer" placeholder="Customer Name" required>
+        <input id="amount" type="number" placeholder="Amount" required>
+        <input id="dueDate" type="date" required>
+        <select id="status">
+          <option>Pending</option>
+          <option>Paid</option>
+          <option>Overdue</option>
+        </select>
+        <button type="submit">Add</button>
+      </div>
     </form>
   </div>
 
+  <!-- TABLE -->
   <div class="card">
     <h2>Payment Records</h2>
-    <input class="search" type="text" id="search" placeholder="Search customer...">
-
     <table id="table">
       <thead>
         <tr>
@@ -148,66 +117,36 @@ th, td {
 </div>
 
 <script>
-const paymentForm = document.getElementById("paymentForm");
-const customer = document.getElementById("customer");
-const amount = document.getElementById("amount");
-const dueDate = document.getElementById("dueDate");
-const status = document.getElementById("status");
-const tableBody = document.querySelector("#table tbody");
-const search = document.getElementById("search");
+const form = document.getElementById("paymentForm");
+const tbody = document.querySelector("#table tbody");
 
-let payments = JSON.parse(localStorage.getItem("payments")) || [];
+form.addEventListener("submit", function(e){
+  e.preventDefault(); // 🔥 THIS WAS MISSING
 
-function save() {
-  localStorage.setItem("payments", JSON.stringify(payments));
-}
+  const customer = customerInput.value.trim();
+  const amount = amountInput.value;
+  const dueDate = dueDateInput.value;
+  const status = statusInput.value;
 
-function render() {
-  tableBody.innerHTML = "";
-  payments.forEach((p, i) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${p.customer}</td>
-      <td>${p.amount}</td>
-      <td>${p.dueDate}</td>
-      <td class="status-${p.status.toLowerCase()}">${p.status}</td>
-      <td><button class="delete-btn" onclick="remove(${i})">Delete</button></td>
-    `;
-    tableBody.appendChild(tr);
-  });
-}
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td>${customer}</td>
+    <td>₹${amount}</td>
+    <td>${dueDate}</td>
+    <td>${status}</td>
+    <td><button class="delete">Delete</button></td>
+  `;
 
-function remove(index) {
-  payments.splice(index, 1);
-  save();
-  render();
-}
+  row.querySelector(".delete").onclick = () => row.remove();
+  tbody.appendChild(row);
 
-paymentForm.addEventListener("submit", e => {
-  e.preventDefault();
-
-  payments.push({
-    customer: customer.value,
-    amount: amount.value,
-    dueDate: dueDate.value,
-    status: status.value
-  });
-
-  save();
-  render();
-  paymentForm.reset();
+  form.reset();
 });
 
-search.addEventListener("input", () => {
-  const val = search.value.toLowerCase();
-  document.querySelectorAll("#table tbody tr").forEach(row => {
-    row.style.display = row.children[0].textContent.toLowerCase().includes(val)
-      ? ""
-      : "none";
-  });
-});
-
-render();
+const customerInput = document.getElementById("customer");
+const amountInput = document.getElementById("amount");
+const dueDateInput = document.getElementById("dueDate");
+const statusInput = document.getElementById("status");
 </script>
 
 </body>
