@@ -13,210 +13,197 @@ body {
 }
 
 header {
-  background: #0f172a;
+  background: linear-gradient(90deg,#0f172a,#020617);
   color: white;
-  padding: 15px;
+  padding: 18px;
   text-align: center;
   font-size: 22px;
 }
 
 .container {
-  max-width: 1200px;
-  margin: auto;
+  max-width: 1100px;
+  margin: 30px auto;
   padding: 20px;
-}
-
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
-  gap: 15px;
-  margin-bottom: 20px;
 }
 
 .card {
   background: white;
-  padding: 15px;
-  border-radius: 8px;
-  text-align: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,.1);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  margin-bottom: 30px;
 }
 
-.card h3 { margin: 5px 0; }
-
-.form-box, .table-box {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,.1);
-  margin-bottom: 20px;
+.card h2 {
+  margin-bottom: 15px;
 }
 
 form {
   display: grid;
   grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
-  gap: 10px;
+  gap: 15px;
 }
 
 input, select, button {
-  padding: 10px;
-  font-size: 14px;
+  padding: 12px;
+  font-size: 15px;
 }
 
 button {
-  background: #38bdf8;
+  background: #0ea5e9;
   border: none;
+  color: white;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 5px;
 }
 
 button:hover {
-  background: #0ea5e9;
+  background: #0284c7;
+}
+
+.search {
+  margin-bottom: 15px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
 }
 
-th, td {
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-  text-align: center;
-}
-
-th {
-  background: #0f172a;
+thead {
+  background: #020617;
   color: white;
 }
 
-.paid { color: green; font-weight: bold; }
-.pending { color: orange; font-weight: bold; }
-.overdue { color: red; font-weight: bold; }
+th, td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
 
-.search {
-  margin-bottom: 10px;
+.status-paid {
+  color: green;
+  font-weight: bold;
+}
+
+.status-pending {
+  color: orange;
+  font-weight: bold;
+}
+
+.status-overdue {
+  color: red;
+  font-weight: bold;
+}
+
+.delete-btn {
+  background: red;
+  padding: 6px 10px;
+  border-radius: 4px;
 }
 </style>
 </head>
 
 <body>
 
-<header>Advanced Payment Follow-up Dashboard</header>
+<header>
+  Payment Follow-up Dashboard
+</header>
 
 <div class="container">
 
-<div class="cards">
-  <div class="card"><h3>Total</h3><span id="totalAmt">₹0</span></div>
-  <div class="card"><h3>Paid</h3><span id="paidAmt">₹0</span></div>
-  <div class="card"><h3>Pending</h3><span id="pendingAmt">₹0</span></div>
-  <div class="card"><h3>Overdue</h3><span id="overdueAmt">₹0</span></div>
-</div>
+  <div class="card">
+    <h2>Add Payment Record</h2>
+    <form id="paymentForm">
+      <input type="text" id="customer" placeholder="Customer Name" required>
+      <input type="number" id="amount" placeholder="Amount" required>
+      <input type="date" id="dueDate" required>
+      <select id="status">
+        <option value="Pending">Pending</option>
+        <option value="Paid">Paid</option>
+        <option value="Overdue">Overdue</option>
+      </select>
+      <button type="submit">Add</button>
+    </form>
+  </div>
 
-<div class="form-box">
-<h3>Add Payment</h3>
-<form id="paymentForm">
-  <input type="text" id="customer" placeholder="Customer Name" required>
-  <input type="number" id="amount" placeholder="Amount" required>
-  <input type="date" id="dueDate" required>
-  <select id="status">
-    <option value="Pending">Pending</option>
-    <option value="Paid">Paid</option>
-  </select>
-  <button type="submit">Add Record</button>
-</form>
-</div>
+  <div class="card">
+    <h2>Payment Records</h2>
+    <input class="search" type="text" id="search" placeholder="Search customer...">
 
-<div class="table-box">
-<input class="search" type="text" id="search" placeholder="Search customer...">
-
-<table>
-<thead>
-<tr>
-<th>Customer</th>
-<th>Amount</th>
-<th>Due Date</th>
-<th>Status</th>
-<th>Action</th>
-</tr>
-</thead>
-<tbody id="table"></tbody>
-</table>
-</div>
+    <table id="table">
+      <thead>
+        <tr>
+          <th>Customer</th>
+          <th>Amount</th>
+          <th>Due Date</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
 </div>
 
 <script>
+const paymentForm = document.getElementById("paymentForm");
+const customer = document.getElementById("customer");
+const amount = document.getElementById("amount");
+const dueDate = document.getElementById("dueDate");
+const status = document.getElementById("status");
+const tableBody = document.querySelector("#table tbody");
+const search = document.getElementById("search");
+
 let payments = JSON.parse(localStorage.getItem("payments")) || [];
-const table = document.getElementById("table");
 
 function save() {
   localStorage.setItem("payments", JSON.stringify(payments));
 }
 
 function render() {
-  table.innerHTML = "";
-  let total=0, paid=0, pending=0, overdue=0;
-  const today = new Date().toISOString().split("T")[0];
-
-  payments.forEach((p,i)=>{
-    total += +p.amount;
-    let statusClass = p.status.toLowerCase();
-
-    if(p.status==="Pending" && p.dueDate < today){
-      statusClass="overdue";
-      overdue += +p.amount;
-    } else if(p.status==="Paid"){
-      paid += +p.amount;
-    } else {
-      pending += +p.amount;
-    }
-
-    table.innerHTML += `
-    <tr>
+  tableBody.innerHTML = "";
+  payments.forEach((p, i) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
       <td>${p.customer}</td>
-      <td>₹${p.amount}</td>
+      <td>${p.amount}</td>
       <td>${p.dueDate}</td>
-      <td class="${statusClass}">${p.status}</td>
-      <td>
-        <button onclick="markPaid(${i})">Paid</button>
-        <button onclick="remove(${i})">Delete</button>
-      </td>
-    </tr>`;
+      <td class="status-${p.status.toLowerCase()}">${p.status}</td>
+      <td><button class="delete-btn" onclick="remove(${i})">Delete</button></td>
+    `;
+    tableBody.appendChild(tr);
   });
-
-  totalAmt.textContent = "₹"+total;
-  paidAmt.textContent = "₹"+paid;
-  pendingAmt.textContent = "₹"+pending;
-  overdueAmt.textContent = "₹"+overdue;
 }
 
-function markPaid(i){
-  payments[i].status="Paid";
-  save(); render();
+function remove(index) {
+  payments.splice(index, 1);
+  save();
+  render();
 }
 
-function remove(i){
-  payments.splice(i,1);
-  save(); render();
-}
-
-paymentForm.addEventListener("submit",e=>{
+paymentForm.addEventListener("submit", e => {
   e.preventDefault();
+
   payments.push({
     customer: customer.value,
     amount: amount.value,
     dueDate: dueDate.value,
     status: status.value
   });
-  save(); render();
+
+  save();
+  render();
   paymentForm.reset();
 });
 
-search.addEventListener("input",()=>{
+search.addEventListener("input", () => {
   const val = search.value.toLowerCase();
-  document.querySelectorAll("#table tr").forEach(r=>{
-    r.style.display = r.children[0].textContent.toLowerCase().includes(val) ? "" : "none";
+  document.querySelectorAll("#table tbody tr").forEach(row => {
+    row.style.display = row.children[0].textContent.toLowerCase().includes(val)
+      ? ""
+      : "none";
   });
 });
 
