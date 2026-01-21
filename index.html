@@ -1,224 +1,224 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>My Business</title>
+<meta charset="UTF-8">
+<title>Advanced Payment Follow-up Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#f4f6f9;
+}
+header{
+  background:linear-gradient(90deg,#0f172a,#020617);
+  color:#fff;
+  padding:18px;
+  text-align:center;
+  font-size:22px;
+}
+.container{
+  max-width:1200px;
+  margin:30px auto;
+  padding:20px;
+}
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:20px;
+  margin-bottom:30px;
+}
+.card{
+  background:#fff;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 6px 15px rgba(0,0,0,.08);
+  text-align:center;
+}
+.card h3{margin:0;}
+.card p{font-size:22px;font-weight:bold;}
 
-    body {
-      background: #f4f6f8;
-      color: #333;
-      line-height: 1.6;
-    }
+.section{
+  background:#fff;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 6px 15px rgba(0,0,0,.08);
+  margin-bottom:30px;
+}
 
-    header {
-      background: #0f172a;
-      color: white;
-      position: fixed;
-      width: 100%;
-      top: 0;
-      z-index: 1000;
-    }
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:15px;
+}
 
-    .navbar {
-      max-width: 1200px;
-      margin: auto;
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+input,select,button{
+  padding:12px;
+  font-size:15px;
+}
 
-    .logo {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #38bdf8;
-    }
+button{
+  background:#0ea5e9;
+  color:#fff;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+}
+button:hover{background:#0284c7;}
 
-    .nav-links {
-      display: flex;
-      gap: 1.5rem;
-    }
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:15px;
+}
+thead{
+  background:#020617;
+  color:#fff;
+}
+th,td{
+  padding:12px;
+  text-align:center;
+  border-bottom:1px solid #ddd;
+}
 
-    .nav-links a {
-      color: white;
-      text-decoration: none;
-    }
+.delete{
+  background:red;
+  padding:6px 10px;
+  border-radius:4px;
+}
 
-    .menu-toggle {
-      display: none;
-      font-size: 1.8rem;
-      cursor: pointer;
-    }
-
-    .hero {
-      height: 100vh;
-      background: linear-gradient(to right, #0f172a, #1e293b);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 1rem;
-    }
-
-    .hero h1 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-
-    .hero p {
-      font-size: 1.2rem;
-      margin-bottom: 2rem;
-      color: #cbd5f5;
-    }
-
-    .hero button {
-      padding: 0.8rem 2rem;
-      background: #38bdf8;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-
-    section {
-      padding: 5rem 2rem;
-      max-width: 1200px;
-      margin: auto;
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
-    .services {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .service-box {
-      background: white;
-      padding: 2rem;
-      border-radius: 8px;
-      text-align: center;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-
-    footer {
-      background: #0f172a;
-      color: white;
-      text-align: center;
-      padding: 1.5rem;
-    }
-
-    @media (max-width: 768px) {
-      .nav-links {
-        display: none;
-        flex-direction: column;
-        background: #0f172a;
-        width: 100%;
-        position: absolute;
-        top: 60px;
-        left: 0;
-      }
-
-      .nav-links.active {
-        display: flex;
-      }
-
-      .menu-toggle {
-        display: block;
-      }
-
-      .hero h1 {
-        font-size: 2.2rem;
-      }
-    }
-  </style>
+.status-Paid{color:green;font-weight:bold;}
+.status-Pending{color:orange;font-weight:bold;}
+.status-Overdue{color:red;font-weight:bold;}
+</style>
 </head>
 
 <body>
 
-<header>
-  <nav class="navbar">
-    <div class="logo">My Business</div>
-    <div class="menu-toggle" id="menuToggle">☰</div>
-    <div class="nav-links" id="navLinks">
-      <a href="#home">Home</a>
-      <a href="#services">Services</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-    </div>
-  </nav>
-</header>
+<header>Advanced Payment Follow-up Dashboard</header>
 
-<section class="hero" id="home">
-  <div>
-    <h1>We Help Grow Your Business</h1>
-    <p>Professional solutions tailored for your success</p>
-    <button id="contactBtn">Contact Us</button>
+<div class="container">
+
+  <!-- SUMMARY CARDS -->
+  <div class="cards">
+    <div class="card"><h3>Total</h3><p id="totalAmt">₹0</p></div>
+    <div class="card"><h3>Paid</h3><p id="paidAmt">₹0</p></div>
+    <div class="card"><h3>Pending</h3><p id="pendingAmt">₹0</p></div>
+    <div class="card"><h3>Overdue</h3><p id="overdueAmt">₹0</p></div>
   </div>
-</section>
 
-<section id="services">
-  <h2>Our Services</h2>
-  <div class="services">
-    <div class="service-box">
-      <h3>Consulting</h3>
-      <p>Expert business consulting services.</p>
-    </div>
-    <div class="service-box">
-      <h3>Marketing</h3>
-      <p>Grow your brand and reach more customers.</p>
-    </div>
-    <div class="service-box">
-      <h3>Support</h3>
-      <p>24/7 customer and technical support.</p>
+  <!-- ADD PAYMENT -->
+  <div class="section">
+    <h2>Add Payment</h2>
+    <div class="form-grid">
+      <input id="customer" placeholder="Customer Name">
+      <input id="amount" type="number" placeholder="Amount">
+      <input id="dueDate" type="date">
+      <select id="status">
+        <option>Pending</option>
+        <option>Paid</option>
+        <option>Overdue</option>
+      </select>
+      <button id="addBtn">Add Record</button>
     </div>
   </div>
-</section>
 
-<section id="about">
-  <h2>About Us</h2>
-  <p style="text-align:center;">
-    We are a trusted business providing quality services to our clients worldwide.
-  </p>
-</section>
+  <!-- TABLE -->
+  <div class="section">
+    <h2>Payment Records</h2>
+    <table id="table">
+      <thead>
+        <tr>
+          <th>Customer</th>
+          <th>Amount</th>
+          <th>Due Date</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
-<section id="contact">
-  <h2>Contact Us</h2>
-  <p style="text-align:center;">
-    📞 Phone: +1 234 567 890 <br>
-    📧 Email: info@mybusiness.com
-  </p>
-</section>
-
-<footer>
-  <p>© 2026 My Business. All Rights Reserved.</p>
-</footer>
+</div>
 
 <script>
-  const menuToggle = document.getElementById("menuToggle");
-  const navLinks = document.getElementById("navLinks");
+const customer = document.getElementById("customer");
+const amount = document.getElementById("amount");
+const dueDate = document.getElementById("dueDate");
+const status = document.getElementById("status");
+const addBtn = document.getElementById("addBtn");
+const tbody = document.querySelector("#table tbody");
 
-  menuToggle.addEventListener("click", () => {
-    navLinks.classList.toggle("active");
-  });
+const totalAmt = document.getElementById("totalAmt");
+const paidAmt = document.getElementById("paidAmt");
+const pendingAmt = document.getElementById("pendingAmt");
+const overdueAmt = document.getElementById("overdueAmt");
 
-  document.getElementById("contactBtn").addEventListener("click", () => {
-    document.getElementById("contact").scrollIntoView({ behavior: "smooth" });
+let payments = JSON.parse(localStorage.getItem("payments")) || [];
+
+function save(){
+  localStorage.setItem("payments",JSON.stringify(payments));
+}
+
+function updateTotals(){
+  let total=0,paid=0,pending=0,overdue=0;
+  payments.forEach(p=>{
+    const amt=Number(p.amount);
+    total+=amt;
+    if(p.status==="Paid") paid+=amt;
+    if(p.status==="Pending") pending+=amt;
+    if(p.status==="Overdue") overdue+=amt;
   });
+  totalAmt.textContent=`₹${total}`;
+  paidAmt.textContent=`₹${paid}`;
+  pendingAmt.textContent=`₹${pending}`;
+  overdueAmt.textContent=`₹${overdue}`;
+}
+
+function render(){
+  tbody.innerHTML="";
+  payments.forEach((p,i)=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td>${p.customer}</td>
+      <td>${p.amount}</td>
+      <td>${p.dueDate}</td>
+      <td class="status-${p.status}">${p.status}</td>
+      <td><button class="delete" onclick="removeRow(${i})">Delete</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+  updateTotals();
+}
+
+function removeRow(i){
+  payments.splice(i,1);
+  save();
+  render();
+}
+
+addBtn.onclick=()=>{
+  if(!customer.value||!amount.value||!dueDate.value){
+    alert("Please fill all fields");
+    return;
+  }
+  payments.push({
+    customer:customer.value,
+    amount:amount.value,
+    dueDate:dueDate.value,
+    status:status.value
+  });
+  save();
+  render();
+  customer.value="";
+  amount.value="";
+  dueDate.value="";
+  status.value="Pending";
+};
+
+render();
 </script>
 
 </body>
