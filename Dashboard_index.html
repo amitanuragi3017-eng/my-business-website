@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment Follow-up Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+    }
+
+    header {
+      background: #0f172a;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.4rem;
+    }
+
+    .container {
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+    }
+
+    input, select, button {
+      padding: 10px;
+      font-size: 14px;
+    }
+
+    button {
+      background: #38bdf8;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    button:hover {
+      background: #0ea5e9;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+
+    th {
+      background: #0f172a;
+      color: white;
+    }
+
+    .paid {
+      color: green;
+      font-weight: bold;
+    }
+
+    .pending {
+      color: orange;
+      font-weight: bold;
+    }
+
+    .overdue {
+      color: red;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      table {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  Payment Follow-up Dashboard
+</header>
+
+<div class="container">
+
+  <!-- ADD PAYMENT -->
+  <div class="card">
+    <h2>Add Payment Record</h2>
+    <form id="paymentForm">
+      <input type="text" id="customer" placeholder="Customer Name" required>
+      <input type="number" id="amount" placeholder="Amount" required>
+      <input type="date" id="dueDate" required>
+      <select id="status">
+        <option value="Pending">Pending</option>
+        <option value="Paid">Paid</option>
+      </select>
+      <button type="submit">Add</button>
+    </form>
+  </div>
+
+  <!-- TABLE -->
+  <div class="card">
+    <h2>Payment Records</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Customer</th>
+          <th>Amount</th>
+          <th>Due Date</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="paymentTable"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+  const form = document.getElementById("paymentForm");
+  const table = document.getElementById("paymentTable");
+
+  let payments = JSON.parse(localStorage.getItem("payments")) || [];
+
+  function saveData() {
+    localStorage.setItem("payments", JSON.stringify(payments));
+  }
+
+  function renderTable() {
+    table.innerHTML = "";
+
+    payments.forEach((p, index) => {
+      const today = new Date().toISOString().split("T")[0];
+      let statusClass = p.status.toLowerCase();
+
+      if (p.status === "Pending" && p.dueDate < today) {
+        statusClass = "overdue";
+      }
+
+      const row = `
+        <tr>
+          <td>${p.customer}</td>
+          <td>₹${p.amount}</td>
+          <td>${p.dueDate}</td>
+          <td class="${statusClass}">${p.status}</td>
+          <td>
+            <button onclick="markPaid(${index})">Mark Paid</button>
+            <button onclick="removeRecord(${index})">Delete</button>
+          </td>
+        </tr>
+      `;
+      table.innerHTML += row;
+    });
+  }
+
+  function markPaid(index) {
+    payments[index].status = "Paid";
+    saveData();
+    renderTable();
+  }
+
+  function removeRecord(index) {
+    payments.splice(index, 1);
+    saveData();
+    renderTable();
+  }
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+
+    payments.push({
+      customer: customer.value,
+      amount: amount.value,
+      dueDate: dueDate.value,
+      status: status.value
+    });
+
+    saveData();
+    renderTable();
+    form.reset();
+  });
+
+  renderTable();
+</script>
+
+</body>
+</html>
