@@ -242,18 +242,19 @@
         }
         
         th {
-            padding: 16px;
+            padding: 12px;
             text-align: left;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             color: #64748b;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            white-space: nowrap;
         }
         
         td {
-            padding: 16px;
-            font-size: 14px;
+            padding: 12px;
+            font-size: 13px;
             border-bottom: 1px solid #e2e8f0;
         }
         
@@ -264,7 +265,7 @@
         .status-badge {
             padding: 4px 8px;
             border-radius: 12px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 500;
             display: inline-block;
         }
@@ -284,13 +285,22 @@
             color: #1e40af;
         }
         
+        .month-badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            background: #f3e8ff;
+            color: #7c3aed;
+        }
+        
         .action-btn {
             background: none;
             border: 1px solid #e2e8f0;
             border-radius: 6px;
-            padding: 6px 12px;
+            padding: 6px 10px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
             margin-right: 4px;
             transition: background 0.2s;
         }
@@ -324,7 +334,7 @@
         
         .modal-content {
             background: white;
-            padding: 32px;
+            padding: 24px;
             border-radius: 12px;
             width: 100%;
             max-width: 500px;
@@ -332,41 +342,42 @@
         }
         
         .modal h3 {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             color: #1e293b;
+            font-size: 18px;
         }
         
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         
         .form-group label {
             display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
+            margin-bottom: 6px;
+            font-size: 13px;
             font-weight: 500;
             color: #475569;
         }
         
         .form-input {
             width: 100%;
-            padding: 10px 12px;
+            padding: 8px 12px;
             border: 1px solid #e2e8f0;
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 14px;
         }
         
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            gap: 12px;
         }
         
         .modal-buttons {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             justify-content: flex-end;
-            margin-top: 32px;
+            margin-top: 24px;
         }
         
         .notification {
@@ -387,6 +398,41 @@
             padding: 40px;
             color: #94a3b8;
             font-style: italic;
+        }
+        
+        .import-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        
+        .import-option-btn {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .import-option-btn:hover {
+            background: #f1f5f9;
+        }
+        
+        .import-option-btn.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        
+        .import-instructions {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 8px;
+            padding: 8px;
+            background: #f8fafc;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -462,47 +508,36 @@
                     <option value="all">All Methods</option>
                 </select>
             </div>
+            
+            <!-- Month Filter -->
+            <div class="filter-group">
+                <label for="month-filter">Invoice Month</label>
+                <select class="filter-select" id="month-filter" onchange="filterPayments()">
+                    <option value="all">All Months</option>
+                </select>
+            </div>
         </div>
         
         <!-- Date Filters -->
         <div class="date-filters">
             <div class="filter-group">
-                <label for="date-from">From Date</label>
-                <input type="date" class="date-input" id="date-from" onchange="filterPayments()">
+                <label for="invoice-date-from">Invoice Date From</label>
+                <input type="date" class="date-input" id="invoice-date-from" onchange="filterPayments()">
             </div>
             
             <div class="filter-group">
-                <label for="date-to">To Date</label>
-                <input type="date" class="date-input" id="date-to" onchange="filterPayments()">
+                <label for="invoice-date-to">Invoice Date To</label>
+                <input type="date" class="date-input" id="invoice-date-to" onchange="filterPayments()">
             </div>
             
             <div class="filter-group">
-                <label for="month-filter">Month</label>
-                <select class="filter-select" id="month-filter" onchange="filterByMonth()">
-                    <option value="all">All Months</option>
-                    <option value="01">January</option>
-                    <option value="02">February</option>
-                    <option value="03">March</option>
-                    <option value="04">April</option>
-                    <option value="05">May</option>
-                    <option value="06">June</option>
-                    <option value="07">July</option>
-                    <option value="08">August</option>
-                    <option value="09">September</option>
-                    <option value="10">October</option>
-                    <option value="11">November</option>
-                    <option value="12">December</option>
-                </select>
+                <label for="payment-date-from">Payment Date From</label>
+                <input type="date" class="date-input" id="payment-date-from" onchange="filterPayments()">
             </div>
             
             <div class="filter-group">
-                <label for="year-filter">Year</label>
-                <select class="filter-select" id="year-filter" onchange="filterPayments()">
-                    <option value="all">All Years</option>
-                    <option value="2024">2024</option>
-                    <option value="2025">2025</option>
-                    <option value="2026">2026</option>
-                </select>
+                <label for="payment-date-to">Payment Date To</label>
+                <input type="date" class="date-input" id="payment-date-to" onchange="filterPayments()">
             </div>
         </div>
         
@@ -529,8 +564,10 @@
             <tr>
                 <th>Network</th>
                 <th>Vendor Name</th>
+                <th>Month</th>
                 <th>Amount</th>
-                <th>Date</th>
+                <th>Invoice Date</th>
+                <th>Payment Date</th>
                 <th>Due Date</th>
                 <th>Status</th>
                 <th>Payment Method</th>
@@ -561,12 +598,23 @@
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Amount</label>
+                        <label>Amount ($)</label>
                         <input type="number" class="form-input" id="amount-input" placeholder="e.g., 4200.00" step="0.01" required>
                     </div>
                     <div class="form-group">
-                        <label>Date</label>
-                        <input type="date" class="form-input" id="date-input" required>
+                        <label>Invoice #</label>
+                        <input type="text" class="form-input" id="invoice-input" placeholder="e.g., SF-010" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Invoice Date</label>
+                        <input type="date" class="form-input" id="invoice-date-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Payment Date</label>
+                        <input type="date" class="form-input" id="payment-date-input">
                     </div>
                 </div>
                 
@@ -596,10 +644,6 @@
                             <option value="Check">Check</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Invoice #</label>
-                        <input type="text" class="form-input" id="invoice-input" placeholder="e.g., SF-010" required>
-                    </div>
                 </div>
                 
                 <div class="modal-buttons">
@@ -614,12 +658,27 @@
     <div class="modal" id="import-modal">
         <div class="modal-content">
             <h3>Import Data</h3>
+            
+            <div class="import-options">
+                <div class="import-option-btn active" id="import-json-btn" onclick="setImportType('json')">
+                    JSON Format
+                </div>
+                <div class="import-option-btn" id="import-csv-btn" onclick="setImportType('csv')">
+                    CSV Format
+                </div>
+            </div>
+            
             <div class="form-group">
-                <label>Select JSON file to import</label>
-                <input type="file" class="form-input" id="import-file" accept=".json">
-                <p style="font-size: 12px; color: #64748b; margin-top: 8px;">
+                <label id="import-file-label">Select JSON file to import</label>
+                <input type="file" class="form-input" id="import-file">
+                
+                <div class="import-instructions" id="json-instructions">
                     Upload a JSON file previously exported from this dashboard
-                </p>
+                </div>
+                <div class="import-instructions" id="csv-instructions" style="display: none;">
+                    Upload CSV with columns: Network, Vendor, Amount, Invoice Date, Payment Date, Due Date, Status, Method, Invoice #
+                    <br>Format dates as YYYY-MM-DD
+                </div>
             </div>
             
             <div class="modal-buttons">
@@ -632,15 +691,12 @@
     <!-- Notification -->
     <div class="notification" id="notification">Payment saved successfully!</div>
     
-    <!-- Hidden file input for restore -->
-    <input type="file" id="restore-file" accept=".json" style="display: none;">
-    
     <script>
         // DATA STORAGE - localStorage on your laptop
         const STORAGE_KEY = 'payment_dashboard_data';
         let payments = [];
         let editingId = null;
-        let currentFilters = {};
+        let currentImportType = 'json';
         
         // Initialize with sample data if empty
         function initializeData() {
@@ -649,14 +705,15 @@
             if (savedData) {
                 payments = JSON.parse(savedData);
             } else {
-                // Sample data matching your mockup
+                // Updated sample data with new fields
                 payments = [
                     {
                         id: 1,
                         network: "undefined",
                         vendor: "Salesforce",
                         amount: 4200.00,
-                        date: "2024-01-28",
+                        invoiceDate: "2024-01-28",
+                        paymentDate: "2024-01-30",
                         dueDate: "2024-02-15",
                         status: "Completed",
                         method: "Credit Card",
@@ -667,7 +724,8 @@
                         network: "undefined",
                         vendor: "Atlassian",
                         amount: 950.00,
-                        date: "2024-01-25",
+                        invoiceDate: "2024-01-25",
+                        paymentDate: null,
                         dueDate: "2024-02-10",
                         status: "Pending",
                         method: "Bank Transfer",
@@ -678,7 +736,8 @@
                         network: "undefined",
                         vendor: "GitHub Inc",
                         amount: 75.00,
-                        date: "2024-01-22",
+                        invoiceDate: "2024-01-22",
+                        paymentDate: "2024-01-25",
                         dueDate: "2024-02-08",
                         status: "Processing",
                         method: "PayPal",
@@ -689,7 +748,8 @@
                         network: "undefined",
                         vendor: "Dropbox Inc",
                         amount: 155.00,
-                        date: "2024-01-20",
+                        invoiceDate: "2024-01-20",
+                        paymentDate: "2024-01-22",
                         dueDate: "2024-02-05",
                         status: "Completed",
                         method: "Credit Card",
@@ -700,7 +760,8 @@
                         network: "undefined",
                         vendor: "Zoom Video",
                         amount: 290.00,
-                        date: "2024-01-18",
+                        invoiceDate: "2024-01-18",
+                        paymentDate: "2024-01-20",
                         dueDate: "2024-02-01",
                         status: "Completed",
                         method: "PayPal",
@@ -715,6 +776,20 @@
             updateStats();
         }
         
+        // Get month name from date
+        function getMonthFromDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: 'short' });
+        }
+        
+        // Get month-year from date
+        function getMonthYearFromDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        }
+        
         // Populate filter dropdowns
         function populateFilterOptions() {
             // Get unique values
@@ -722,6 +797,9 @@
             const statuses = [...new Set(payments.map(p => p.status))];
             const vendors = [...new Set(payments.map(p => p.vendor))];
             const methods = [...new Set(payments.map(p => p.method))];
+            const months = [...new Set(payments.map(p => getMonthYearFromDate(p.invoiceDate)))].sort((a, b) => {
+                return new Date(b) - new Date(a);
+            });
             
             // Network filter
             const networkFilter = document.getElementById('network-filter');
@@ -762,6 +840,16 @@
                 option.textContent = method;
                 methodFilter.appendChild(option);
             });
+            
+            // Month filter
+            const monthFilter = document.getElementById('month-filter');
+            monthFilter.innerHTML = '<option value="all">All Months</option>';
+            months.forEach(month => {
+                const option = document.createElement('option');
+                option.value = month;
+                option.textContent = month;
+                monthFilter.appendChild(option);
+            });
         }
         
         // SAVE to localStorage
@@ -777,9 +865,11 @@
             const statusFilter = document.getElementById('status-filter').value;
             const vendorFilter = document.getElementById('vendor-filter').value;
             const methodFilter = document.getElementById('method-filter').value;
-            const dateFrom = document.getElementById('date-from').value;
-            const dateTo = document.getElementById('date-to').value;
-            const yearFilter = document.getElementById('year-filter').value;
+            const monthFilter = document.getElementById('month-filter').value;
+            const invoiceDateFrom = document.getElementById('invoice-date-from').value;
+            const invoiceDateTo = document.getElementById('invoice-date-to').value;
+            const paymentDateFrom = document.getElementById('payment-date-from').value;
+            const paymentDateTo = document.getElementById('payment-date-to').value;
             
             let filtered = payments;
             
@@ -812,44 +902,28 @@
                 filtered = filtered.filter(p => p.method === methodFilter);
             }
             
-            // Date range filter
-            if (dateFrom) {
-                filtered = filtered.filter(p => p.date >= dateFrom);
+            // Month filter
+            if (monthFilter !== 'all') {
+                filtered = filtered.filter(p => getMonthYearFromDate(p.invoiceDate) === monthFilter);
             }
             
-            if (dateTo) {
-                filtered = filtered.filter(p => p.date <= dateTo);
+            // Invoice date range filter
+            if (invoiceDateFrom) {
+                filtered = filtered.filter(p => p.invoiceDate >= invoiceDateFrom);
             }
             
-            // Year filter
-            if (yearFilter !== 'all') {
-                filtered = filtered.filter(p => p.date.startsWith(yearFilter));
+            if (invoiceDateTo) {
+                filtered = filtered.filter(p => p.invoiceDate <= invoiceDateTo);
             }
             
-            renderPayments(filtered);
-            updateStats(filtered);
-        }
-        
-        // Filter by month
-        function filterByMonth() {
-            const monthFilter = document.getElementById('month-filter').value;
-            const yearFilter = document.getElementById('year-filter').value;
-            
-            if (monthFilter === 'all') {
-                filterPayments();
-                return;
+            // Payment date range filter
+            if (paymentDateFrom) {
+                filtered = filtered.filter(p => p.paymentDate && p.paymentDate >= paymentDateFrom);
             }
             
-            let filtered = payments;
-            
-            if (yearFilter !== 'all') {
-                filtered = filtered.filter(p => p.date.startsWith(yearFilter));
+            if (paymentDateTo) {
+                filtered = filtered.filter(p => p.paymentDate && p.paymentDate <= paymentDateTo);
             }
-            
-            filtered = filtered.filter(p => {
-                const month = p.date.split('-')[1];
-                return month === monthFilter;
-            });
             
             renderPayments(filtered);
             updateStats(filtered);
@@ -862,10 +936,11 @@
             document.getElementById('status-filter').value = 'all';
             document.getElementById('vendor-filter').value = 'all';
             document.getElementById('method-filter').value = 'all';
-            document.getElementById('date-from').value = '';
-            document.getElementById('date-to').value = '';
             document.getElementById('month-filter').value = 'all';
-            document.getElementById('year-filter').value = 'all';
+            document.getElementById('invoice-date-from').value = '';
+            document.getElementById('invoice-date-to').value = '';
+            document.getElementById('payment-date-from').value = '';
+            document.getElementById('payment-date-to').value = '';
             
             renderPayments(payments);
             updateStats(payments);
@@ -882,7 +957,7 @@
             if (data.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="9" class="no-data">
+                        <td colspan="11" class="no-data">
                             No payments found. Try adjusting your filters or add a new payment.
                         </td>
                     </tr>
@@ -891,15 +966,22 @@
             }
             
             data.forEach(payment => {
-                const formattedDate = formatDate(payment.date);
+                const formattedInvoiceDate = formatDate(payment.invoiceDate);
+                const formattedPaymentDate = payment.paymentDate ? formatDate(payment.paymentDate) : '—';
                 const formattedDueDate = formatDate(payment.dueDate);
+                const month = getMonthFromDate(payment.invoiceDate);
+                const monthYear = getMonthYearFromDate(payment.invoiceDate);
                 
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${payment.network || 'undefined'}</td>
                     <td>${payment.vendor}</td>
+                    <td>
+                        <span class="month-badge" title="${monthYear}">${month}</span>
+                    </td>
                     <td>$${payment.amount.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
-                    <td>${formattedDate}</td>
+                    <td>${formattedInvoiceDate}</td>
+                    <td>${formattedPaymentDate}</td>
                     <td>${formattedDueDate}</td>
                     <td><span class="status-badge status-${payment.status.toLowerCase()}">${payment.status}</span></td>
                     <td>${payment.method}</td>
@@ -951,7 +1033,8 @@
             document.getElementById('network-input').value = payment.network;
             document.getElementById('vendor-input').value = payment.vendor;
             document.getElementById('amount-input').value = payment.amount;
-            document.getElementById('date-input').value = payment.date;
+            document.getElementById('invoice-date-input').value = payment.invoiceDate;
+            document.getElementById('payment-date-input').value = payment.paymentDate || '';
             document.getElementById('due-date-input').value = payment.dueDate;
             document.getElementById('status-input').value = payment.status;
             document.getElementById('method-input').value = payment.method;
@@ -987,13 +1070,15 @@
         
         // EXPORT to CSV
         function exportToCSV() {
-            const headers = ['Network', 'Vendor', 'Amount', 'Date', 'Due Date', 'Status', 'Method', 'Invoice'];
+            const headers = ['Network', 'Vendor', 'Month', 'Amount', 'Invoice Date', 'Payment Date', 'Due Date', 'Status', 'Method', 'Invoice'];
             const rows = payments.map(p => [
                 p.network || 'undefined',
                 p.vendor,
-                `$${p.amount.toFixed(2)}`,
-                formatDate(p.date),
-                formatDate(p.dueDate),
+                getMonthYearFromDate(p.invoiceDate),
+                p.amount.toFixed(2),
+                p.invoiceDate,
+                p.paymentDate || '',
+                p.dueDate,
                 p.status,
                 p.method,
                 p.invoice
@@ -1015,7 +1100,35 @@
         
         // IMPORT data
         function importData() {
+            currentImportType = 'json';
+            setImportType('json');
             document.getElementById('import-modal').style.display = 'flex';
+        }
+        
+        function setImportType(type) {
+            currentImportType = type;
+            
+            const jsonBtn = document.getElementById('import-json-btn');
+            const csvBtn = document.getElementById('import-csv-btn');
+            const jsonInstructions = document.getElementById('json-instructions');
+            const csvInstructions = document.getElementById('csv-instructions');
+            const fileLabel = document.getElementById('import-file-label');
+            
+            if (type === 'json') {
+                jsonBtn.classList.add('active');
+                csvBtn.classList.remove('active');
+                jsonInstructions.style.display = 'block';
+                csvInstructions.style.display = 'none';
+                fileLabel.textContent = 'Select JSON file to import';
+                document.getElementById('import-file').accept = '.json';
+            } else {
+                jsonBtn.classList.remove('active');
+                csvBtn.classList.add('active');
+                jsonInstructions.style.display = 'none';
+                csvInstructions.style.display = 'block';
+                fileLabel.textContent = 'Select CSV file to import';
+                document.getElementById('import-file').accept = '.csv';
+            }
         }
         
         function closeImportModal() {
@@ -1035,25 +1148,72 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
-                    const importedData = JSON.parse(e.target.result);
-                    
-                    if (!Array.isArray(importedData)) {
-                        throw new Error('Invalid file format');
-                    }
-                    
-                    if (confirm(`This will replace all current data with ${importedData.length} imported payments. Continue?`)) {
-                        payments = importedData;
-                        saveToLocalStorage();
-                        populateFilterOptions();
-                        filterPayments();
-                        closeImportModal();
-                        showNotification(`Successfully imported ${importedData.length} payments`);
+                    if (currentImportType === 'json') {
+                        processJSONImport(e.target.result);
+                    } else {
+                        processCSVImport(e.target.result);
                     }
                 } catch (error) {
-                    alert('Error importing data: Invalid JSON format');
+                    alert('Error importing data: ' + error.message);
                 }
             };
             reader.readAsText(file);
+        }
+        
+        function processJSONImport(content) {
+            const importedData = JSON.parse(content);
+            
+            if (!Array.isArray(importedData)) {
+                throw new Error('Invalid JSON format: Expected array');
+            }
+            
+            if (confirm(`This will replace all current data with ${importedData.length} imported payments. Continue?`)) {
+                payments = importedData;
+                saveToLocalStorage();
+                populateFilterOptions();
+                filterPayments();
+                closeImportModal();
+                showNotification(`Successfully imported ${importedData.length} payments`);
+            }
+        }
+        
+        function processCSVImport(content) {
+            const lines = content.split('\n');
+            if (lines.length < 2) {
+                throw new Error('CSV file is empty or invalid');
+            }
+            
+            const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+            const importedData = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                if (lines[i].trim() === '') continue;
+                
+                const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
+                const payment = {
+                    id: Date.now() + i,
+                    network: values[0] || 'undefined',
+                    vendor: values[1] || '',
+                    amount: parseFloat(values[3]) || 0,
+                    invoiceDate: values[4] || new Date().toISOString().split('T')[0],
+                    paymentDate: values[5] || null,
+                    dueDate: values[6] || new Date().toISOString().split('T')[0],
+                    status: values[7] || 'Pending',
+                    method: values[8] || 'Credit Card',
+                    invoice: values[9] || `INV-${Date.now() + i}`
+                };
+                
+                importedData.push(payment);
+            }
+            
+            if (confirm(`Found ${importedData.length} payments in CSV. Import and replace current data?`)) {
+                payments = importedData;
+                saveToLocalStorage();
+                populateFilterOptions();
+                filterPayments();
+                closeImportModal();
+                showNotification(`Successfully imported ${importedData.length} payments from CSV`);
+            }
         }
         
         // BACKUP data
@@ -1089,7 +1249,7 @@
             const today = new Date().toISOString().split('T')[0];
             const nextWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
             
-            document.getElementById('date-input').value = today;
+            document.getElementById('invoice-date-input').value = today;
             document.getElementById('due-date-input').value = nextWeek;
             
             openModal();
@@ -1103,7 +1263,8 @@
                 network: document.getElementById('network-input').value || 'undefined',
                 vendor: document.getElementById('vendor-input').value,
                 amount: parseFloat(document.getElementById('amount-input').value),
-                date: document.getElementById('date-input').value,
+                invoiceDate: document.getElementById('invoice-date-input').value,
+                paymentDate: document.getElementById('payment-date-input').value || null,
                 dueDate: document.getElementById('due-date-input').value,
                 status: document.getElementById('status-input').value,
                 method: document.getElementById('method-input').value,
@@ -1121,6 +1282,7 @@
         
         // UTILITY functions
         function formatDate(dateString) {
+            if (!dateString) return '—';
             const date = new Date(dateString);
             return date.toLocaleDateString('en-US', {
                 month: 'short',
@@ -1158,13 +1320,13 @@
             
             // Set default dates for filters (current month)
             const today = new Date();
-            const firstDay = new Date(today.getFullYear(), today.getMonth(), 2);
-            const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
             
-            document.getElementById('date-from').value = firstDay.toISOString().split('T')[0];
-            document.getElementById('date-to').value = lastDay.toISOString().split('T')[0];
+            document.getElementById('invoice-date-from').value = firstDay.toISOString().split('T')[0];
+            document.getElementById('invoice-date-to').value = lastDay.toISOString().split('T')[0];
             
-            console.log('Payment Dashboard initialized with advanced filters');
+            console.log('Payment Dashboard initialized with new columns and CSV import');
         });
     </script>
 </body>
