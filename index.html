@@ -62,6 +62,7 @@
         .header-actions {
             display: flex;
             gap: 15px;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -93,6 +94,24 @@
 
         .btn-secondary:hover {
             background: #5a6268;
+        }
+
+        .btn-info {
+            background: var(--info);
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #138496;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: var(--dark);
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
         }
 
         .btn-danger {
@@ -216,6 +235,7 @@
             overflow-x: auto;
             border-radius: var(--border-radius);
             border: 1px solid #eee;
+            margin-bottom: 30px;
         }
 
         table {
@@ -372,6 +392,77 @@
             font-size: 1.1rem;
         }
 
+        /* Import/Export Section */
+        .import-export-section {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .import-export-section h3 {
+            margin-bottom: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .import-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .csv-format {
+            background: var(--light-gray);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            font-family: monospace;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+        .csv-format h4 {
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .quick-add-section {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .quick-add-section h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quick-add-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        #quickAddTextarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-family: monospace;
+            font-size: 14px;
+            min-height: 150px;
+            resize: vertical;
+        }
+
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
@@ -422,6 +513,10 @@
                 text-align: center;
             }
             
+            .header-actions {
+                justify-content: center;
+            }
+            
             .form-row {
                 flex-direction: column;
                 gap: 15px;
@@ -435,6 +530,10 @@
             .filters select {
                 width: 100%;
             }
+            
+            .import-actions {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -446,6 +545,13 @@
             <div class="header-actions">
                 <button id="exportBtn" class="btn btn-secondary">
                     <i class="fas fa-download"></i> Export CSV
+                </button>
+                <button id="importBtn" class="btn btn-info">
+                    <i class="fas fa-upload"></i> Import CSV
+                </button>
+                <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
+                <button id="addSampleBtn" class="btn btn-warning">
+                    <i class="fas fa-database"></i> Add Sample Data
                 </button>
                 <button id="addPaymentBtn" class="btn btn-primary">
                     <i class="fas fa-plus"></i> Add Payment
@@ -524,9 +630,47 @@
                     </table>
                 </div>
             </div>
+
+            <!-- Import/Export Section -->
+            <div class="import-export-section">
+                <h3><i class="fas fa-file-import"></i> Bulk Import/Export</h3>
+                
+                <div class="import-actions">
+                    <button id="downloadTemplateBtn" class="btn btn-secondary">
+                        <i class="fas fa-file-download"></i> Download CSV Template
+                    </button>
+                    <button id="clearAllBtn" class="btn btn-danger">
+                        <i class="fas fa-trash-alt"></i> Clear All Data
+                    </button>
+                </div>
+
+                <div class="csv-format">
+                    <h4>CSV Format:</h4>
+                    <p>Vendor Name, Amount, Date (YYYY-MM-DD), Due Date (optional), Status, Payment Method, Invoice # (optional), Description (optional)</p>
+                    <p><strong>Example:</strong><br>
+                    Microsoft Corp,1500.00,2024-01-05,2024-01-10,Completed,Bank Transfer,MS-001,Software license</p>
+                </div>
+            </div>
+
+            <!-- Quick Add Section -->
+            <div class="quick-add-section">
+                <h3><i class="fas fa-bolt"></i> Quick Add Multiple Payments</h3>
+                <div class="quick-add-form">
+                    <textarea id="quickAddTextarea" placeholder="Enter payments in this format (one per line):
+Vendor Name | Amount | Date (YYYY-MM-DD) | Status | Payment Method
+Example:
+Microsoft | 1500.00 | 2024-01-15 | Completed | Bank Transfer
+Google | 850.75 | 2024-01-10 | Pending | Credit Card
+Amazon | 1200.50 | 2024-01-20 | Processing | PayPal"></textarea>
+                    <button id="quickAddBtn" class="btn btn-primary">
+                        <i class="fas fa-plus-circle"></i> Add Multiple Payments
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
+    <!-- Payment Modal -->
     <div id="paymentModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -594,6 +738,7 @@
         </div>
     </div>
 
+    <!-- Confirmation Modal -->
     <div id="confirmModal" class="modal">
         <div class="modal-content confirm-modal">
             <div class="modal-header">
@@ -603,6 +748,20 @@
             <div class="modal-actions">
                 <button id="cancelDelete" class="btn btn-secondary">Cancel</button>
                 <button id="confirmDelete" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clear All Modal -->
+    <div id="clearAllModal" class="modal">
+        <div class="modal-content confirm-modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-exclamation-triangle"></i> Clear All Data</h2>
+            </div>
+            <p>Are you sure you want to delete ALL payment entries? This action cannot be undone and will remove all data.</p>
+            <div class="modal-actions">
+                <button id="cancelClearAll" class="btn btn-secondary">Cancel</button>
+                <button id="confirmClearAll" class="btn btn-danger">Clear All Data</button>
             </div>
         </div>
     </div>
@@ -666,6 +825,7 @@
             }
 
             initializeEventListeners() {
+                // Original buttons
                 document.getElementById('addPaymentBtn').addEventListener('click', () => {
                     this.openModal();
                 });
@@ -712,18 +872,292 @@
                     this.deletePayment();
                 });
 
+                // New Import/Export buttons
+                document.getElementById('importBtn').addEventListener('click', () => {
+                    document.getElementById('csvFileInput').click();
+                });
+
+                document.getElementById('csvFileInput').addEventListener('change', (e) => {
+                    this.importFromCSV(e.target.files[0]);
+                });
+
+                document.getElementById('addSampleBtn').addEventListener('click', () => {
+                    this.addSampleData();
+                });
+
+                document.getElementById('quickAddBtn').addEventListener('click', () => {
+                    this.quickAddPayments();
+                });
+
+                document.getElementById('downloadTemplateBtn').addEventListener('click', () => {
+                    this.downloadCSVTemplate();
+                });
+
+                document.getElementById('clearAllBtn').addEventListener('click', () => {
+                    this.openClearAllModal();
+                });
+
+                document.getElementById('cancelClearAll').addEventListener('click', () => {
+                    this.closeClearAllModal();
+                });
+
+                document.getElementById('confirmClearAll').addEventListener('click', () => {
+                    this.clearAllData();
+                });
+
                 window.addEventListener('click', (e) => {
                     const modal = document.getElementById('paymentModal');
                     const confirmModal = document.getElementById('confirmModal');
+                    const clearAllModal = document.getElementById('clearAllModal');
                     
-                    if (e.target === modal) {
-                        this.closeModal();
-                    }
-                    if (e.target === confirmModal) {
-                        this.closeConfirmModal();
-                    }
+                    if (e.target === modal) this.closeModal();
+                    if (e.target === confirmModal) this.closeConfirmModal();
+                    if (e.target === clearAllModal) this.closeClearAllModal();
                 });
             }
+
+            // ===== IMPORT/EXPORT METHODS =====
+            
+            importFromCSV(file) {
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const csvText = e.target.result;
+                    const rows = csvText.split('\n');
+                    if (rows.length < 2) {
+                        this.showNotification('CSV file is empty or invalid', 'error');
+                        return;
+                    }
+                    
+                    let importedCount = 0;
+                    let skippedCount = 0;
+                    
+                    // Check if first row has headers
+                    const firstRow = rows[0].toLowerCase();
+                    const hasHeaders = firstRow.includes('vendor') || firstRow.includes('amount');
+                    
+                    const startIndex = hasHeaders ? 1 : 0;
+                    
+                    for (let i = startIndex; i < rows.length; i++) {
+                        const row = rows[i].trim();
+                        if (!row) continue;
+                        
+                        // Handle quoted values and commas within quotes
+                        const columns = this.parseCSVRow(row);
+                        
+                        if (columns.length < 3) {
+                            skippedCount++;
+                            continue;
+                        }
+                        
+                        const payment = {
+                            id: Date.now().toString() + i,
+                            vendorName: columns[0]?.trim() || '',
+                            amount: parseFloat(columns[1]) || 0,
+                            paymentDate: columns[2]?.trim() || new Date().toISOString().split('T')[0],
+                            dueDate: columns[3]?.trim() || null,
+                            status: columns[4]?.trim() || 'Pending',
+                            paymentMethod: columns[5]?.trim() || 'Bank Transfer',
+                            invoiceNumber: columns[6]?.trim() || `INV-${Date.now().toString().slice(-6)}-${i}`,
+                            description: columns[7]?.trim() || ''
+                        };
+                        
+                        // Validate data
+                        if (!payment.vendorName || payment.amount <= 0) {
+                            skippedCount++;
+                            continue;
+                        }
+                        
+                        this.payments.push(payment);
+                        importedCount++;
+                    }
+                    
+                    this.savePayments();
+                    this.renderPayments();
+                    this.updateStats();
+                    this.updateVendorFilter();
+                    
+                    let message = `Successfully imported ${importedCount} payments!`;
+                    if (skippedCount > 0) {
+                        message += ` (${skippedCount} rows skipped due to invalid data)`;
+                    }
+                    
+                    this.showNotification(message, 'success');
+                    
+                    // Clear file input
+                    document.getElementById('csvFileInput').value = '';
+                };
+                
+                reader.onerror = () => {
+                    this.showNotification('Error reading CSV file', 'error');
+                };
+                
+                reader.readAsText(file);
+            }
+
+            parseCSVRow(row) {
+                const result = [];
+                let current = '';
+                let inQuotes = false;
+                
+                for (let i = 0; i < row.length; i++) {
+                    const char = row[i];
+                    const nextChar = row[i + 1];
+                    
+                    if (char === '"' && !inQuotes) {
+                        inQuotes = true;
+                    } else if (char === '"' && inQuotes && nextChar === '"') {
+                        current += '"';
+                        i++; // Skip next quote
+                    } else if (char === '"' && inQuotes) {
+                        inQuotes = false;
+                    } else if (char === ',' && !inQuotes) {
+                        result.push(current);
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+                
+                result.push(current);
+                return result;
+            }
+
+            downloadCSVTemplate() {
+                const template = `Vendor Name,Amount,Date,Due Date,Status,Payment Method,Invoice #,Description
+Microsoft Corp,1500.00,2024-01-05,2024-01-10,Completed,Bank Transfer,MS-001,Software license renewal
+Google Cloud,850.75,2024-01-08,2024-01-15,Pending,Credit Card,GC-002,Cloud services
+Amazon AWS,1200.50,2024-01-10,2024-01-20,Processing,PayPal,AWS-003,EC2 instances`;
+
+                const blob = new Blob([template], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'payment_template.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                
+                this.showNotification('CSV template downloaded!', 'success');
+            }
+
+            addSampleData() {
+                const sampleData = [
+                    { vendorName: "Microsoft Corporation", amount: 2500.00, paymentDate: "2024-01-05", dueDate: "2024-01-10", status: "Completed", paymentMethod: "Bank Transfer", invoiceNumber: "MS-2024-001", description: "Office 365 subscription" },
+                    { vendorName: "Google LLC", amount: 1850.75, paymentDate: "2024-01-08", dueDate: "2024-01-15", status: "Pending", paymentMethod: "Credit Card", invoiceNumber: "GOOG-002", description: "Google Workspace" },
+                    { vendorName: "Amazon Web Services", amount: 3200.50, paymentDate: "2024-01-10", dueDate: "2024-01-20", status: "Completed", paymentMethod: "PayPal", invoiceNumber: "AWS-003", description: "EC2 and S3 services" },
+                    { vendorName: "Adobe Inc", amount: 645.00, paymentDate: "2024-01-12", dueDate: "2024-01-25", status: "Processing", paymentMethod: "Credit Card", invoiceNumber: "AD-004", description: "Creative Cloud" },
+                    { vendorName: "Slack Technologies", amount: 430.00, paymentDate: "2024-01-15", dueDate: "2024-01-30", status: "Pending", paymentMethod: "Bank Transfer", invoiceNumber: "SL-005", description: "Business plan" },
+                    { vendorName: "Zoom Video", amount: 290.00, paymentDate: "2024-01-18", dueDate: "2024-02-01", status: "Completed", paymentMethod: "PayPal", invoiceNumber: "ZM-006", description: "Pro subscription" },
+                    { vendorName: "Dropbox Inc", amount: 155.00, paymentDate: "2024-01-20", dueDate: "2024-02-05", status: "Completed", paymentMethod: "Credit Card", invoiceNumber: "DB-007", description: "2TB storage" },
+                    { vendorName: "GitHub Inc", amount: 75.00, paymentDate: "2024-01-22", dueDate: "2024-02-08", status: "Processing", paymentMethod: "PayPal", invoiceNumber: "GH-008", description: "Team plan" },
+                    { vendorName: "Atlassian", amount: 950.00, paymentDate: "2024-01-25", dueDate: "2024-02-10", status: "Pending", paymentMethod: "Bank Transfer", invoiceNumber: "AT-009", description: "Jira & Confluence" },
+                    { vendorName: "Salesforce", amount: 4200.00, paymentDate: "2024-01-28", dueDate: "2024-02-15", status: "Completed", paymentMethod: "Credit Card", invoiceNumber: "SF-010", description: "CRM license" }
+                ];
+
+                sampleData.forEach((data, index) => {
+                    this.payments.push({
+                        id: Date.now().toString() + index,
+                        ...data
+                    });
+                });
+
+                this.savePayments();
+                this.renderPayments();
+                this.updateStats();
+                this.updateVendorFilter();
+                
+                this.showNotification(`Added ${sampleData.length} sample payments!`, 'success');
+            }
+
+            quickAddPayments() {
+                const text = document.getElementById('quickAddTextarea').value.trim();
+                if (!text) {
+                    this.showNotification('Please enter payment data', 'error');
+                    return;
+                }
+                
+                const lines = text.split('\n');
+                let addedCount = 0;
+                let skippedCount = 0;
+                
+                lines.forEach((line, index) => {
+                    line = line.trim();
+                    if (!line || line.startsWith('Example:') || line.startsWith('Enter payments')) {
+                        return;
+                    }
+                    
+                    // Try pipe separator first
+                    let parts = line.split('|').map(p => p.trim());
+                    
+                    // If no pipe, try comma
+                    if (parts.length < 3) {
+                        parts = line.split(',').map(p => p.trim());
+                    }
+                    
+                    if (parts.length >= 3) {
+                        const payment = {
+                            id: Date.now().toString() + index,
+                            vendorName: parts[0] || '',
+                            amount: parseFloat(parts[1]) || 0,
+                            paymentDate: parts[2] || new Date().toISOString().split('T')[0],
+                            dueDate: null,
+                            status: parts[3] || 'Pending',
+                            paymentMethod: parts[4] || 'Bank Transfer',
+                            invoiceNumber: `INV-${Date.now().toString().slice(-6)}-${index}`,
+                            description: ''
+                        };
+                        
+                        if (!payment.vendorName || payment.amount <= 0) {
+                            skippedCount++;
+                            return;
+                        }
+                        
+                        this.payments.push(payment);
+                        addedCount++;
+                    } else {
+                        skippedCount++;
+                    }
+                });
+                
+                this.savePayments();
+                this.renderPayments();
+                this.updateStats();
+                this.updateVendorFilter();
+                
+                // Clear textarea
+                document.getElementById('quickAddTextarea').value = '';
+                
+                let message = `Added ${addedCount} payments successfully!`;
+                if (skippedCount > 0) {
+                    message += ` (${skippedCount} lines skipped)`;
+                }
+                
+                this.showNotification(message, 'success');
+            }
+
+            clearAllData() {
+                this.payments = [];
+                this.savePayments();
+                this.renderPayments();
+                this.updateStats();
+                this.updateVendorFilter();
+                this.closeClearAllModal();
+                
+                this.showNotification('All data cleared successfully!', 'success');
+            }
+
+            openClearAllModal() {
+                document.getElementById('clearAllModal').classList.add('active');
+            }
+
+            closeClearAllModal() {
+                document.getElementById('clearAllModal').classList.remove('active');
+            }
+
+            // ===== ORIGINAL METHODS (unchanged) =====
 
             openModal(paymentId = null) {
                 const modal = document.getElementById('paymentModal');
